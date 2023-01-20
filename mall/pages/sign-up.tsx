@@ -1,367 +1,312 @@
 import { NextPage } from "next";
-import { useState } from "react";
+import Link from "next/link";
+import { useRef, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
+
 interface UserProps {
     name: string;
     email: string;
     password: string;
-    rePassword: string;
-    phone: string;
+    passwordConfirm: string;
 }
-interface PhoneProps {
-    phone: string;
-}
+
 const SignUp: NextPage = () => {
-    const [phone, setPhone] = useState("");
-    const { register, handleSubmit, watch } = useForm<UserProps>();
-    const { register: phoneReg, handleSubmit: phoneHandle } =
-        useForm<PhoneProps>();
-    const onVaild = (form: UserProps) => {
-        console.log(form);
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+    } = useForm<UserProps>(); //
+
+    const userPassword = useRef(""); //비밀번호 재확인을 위해 비밀번호 실시간 감지
+    userPassword.current = watch("password");
+
+    const [seePassword, setSeePassword] = useState(false); // 비밀번호 see 기능
+    const [seePasswordConfirm, setSeePasswordConfirm] = useState(false); //비밀번호 재확인 see 기능
+
+    const handleSeePassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setSeePassword((prev) => !prev);
     };
-    const onPhoneVaild = (form: PhoneProps) => {
-        setPhone(form.phone);
+    const handleSeePasswordConfirm = (
+        e: React.MouseEvent<HTMLButtonElement>
+    ) => {
+        e.preventDefault();
+        setSeePasswordConfirm((prev) => !prev);
     };
+    const onVaild = (formData: UserProps) => {
+        console.log(formData); //axios로 db에 보낼 내용
+    };
+
     return (
-        <>
-            <div className="min-w-screen min-h-screen bg-gray-900 flex items-center justify-center px-5 py-5">
-                <div className="max-w-3xl bg-gray-100 text-gray-500 rounded-3xl shadow-xl w-full overflow-hidden">
-                    <div className="md:flex w-full">
-                        <div className="hidden md:block w-1/2 bg-indigo-500 py-10 px-10">
-                            <svg
-                                id="a87032b8-5b37-4b7e-a4d9-4dbfbe394641"
-                                data-name="Layer 1"
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="100%"
-                                height="auto"
-                                viewBox="0 0 744.84799 747.07702"
-                            >
-                                <path
-                                    id="fa3b9e12-7275-481e-bee9-64fd9595a50d"
-                                    data-name="Path 1"
-                                    d="M299.205,705.80851l-6.56-25.872a335.96693,335.96693,0,0,0-35.643-12.788l-.828,12.024-3.358-13.247c-15.021-4.29394-25.24-6.183-25.24-6.183s13.8,52.489,42.754,92.617l33.734,5.926-26.207,3.779a135.92592,135.92592,0,0,0,11.719,12.422c42.115,39.092,89.024,57.028,104.773,40.06s-5.625-62.412-47.74-101.5c-13.056-12.119-29.457-21.844-45.875-29.5Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#f2f2f2"
-                                />
-                                <path
-                                    id="bde08021-c30f-4979-a9d8-cb90b72b5ca2"
-                                    data-name="Path 2"
-                                    d="M361.591,677.70647l7.758-25.538a335.93951,335.93951,0,0,0-23.9-29.371l-6.924,9.865,3.972-13.076c-10.641-11.436-18.412-18.335-18.412-18.335s-15.315,52.067-11.275,101.384l25.815,22.51-24.392-10.312a135.91879,135.91879,0,0,0,3.614,16.694c15.846,55.234,46.731,94.835,68.983,88.451s27.446-56.335,11.6-111.569c-4.912-17.123-13.926-33.926-24.023-48.965Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#f2f2f2"
-                                />
-                                <path
-                                    id="b3ac2088-de9b-4f7f-bc99-0ed9705c1a9d"
-                                    data-name="Path 22"
-                                    d="M747.327,253.4445h-4.092v-112.1a64.883,64.883,0,0,0-64.883-64.883H440.845a64.883,64.883,0,0,0-64.883,64.883v615a64.883,64.883,0,0,0,64.883,64.883H678.352a64.883,64.883,0,0,0,64.882-64.883v-423.105h4.092Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#e6e6e6"
-                                />
-                                <path
-                                    id="b2715b96-3117-487c-acc0-20904544b5b7"
-                                    data-name="Path 23"
-                                    d="M680.97,93.3355h-31a23.02,23.02,0,0,1-21.316,31.714H492.589a23.02,23.02,0,0,1-21.314-31.714H442.319a48.454,48.454,0,0,0-48.454,48.454v614.107a48.454,48.454,0,0,0,48.454,48.454H680.97a48.454,48.454,0,0,0,48.454-48.454h0V141.7885a48.454,48.454,0,0,0-48.454-48.453Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#fff"
-                                />
-                                <path
-                                    id="b06d66ec-6c84-45dd-8c27-1263a6253192"
-                                    data-name="Path 6"
-                                    d="M531.234,337.96451a24.437,24.437,0,0,1,12.23-21.174,24.45,24.45,0,1,0,0,42.345A24.43391,24.43391,0,0,1,531.234,337.96451Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#ccc"
-                                />
-                                <path
-                                    id="e73810fe-4cf4-40cc-8c7c-ca544ce30bd4"
-                                    data-name="Path 7"
-                                    d="M561.971,337.96451a24.43594,24.43594,0,0,1,12.23-21.174,24.45,24.45,0,1,0,0,42.345A24.43391,24.43391,0,0,1,561.971,337.96451Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#ccc"
-                                />
-                                <circle
-                                    id="a4813fcf-056e-4514-bb8b-e6506f49341f"
-                                    data-name="Ellipse 1"
-                                    cx="364.43401"
-                                    cy="261.50202"
-                                    r="24.45"
-                                    fill="#6c63ff"
-                                />
-                                <path
-                                    id="bbe451c3-febc-41ba-8083-4c8307a2e73e"
-                                    data-name="Path 8"
-                                    d="M632.872,414.3305h-142.5a5.123,5.123,0,0,1-5.117-5.117v-142.5a5.123,5.123,0,0,1,5.117-5.117h142.5a5.123,5.123,0,0,1,5.117,5.117v142.5A5.123,5.123,0,0,1,632.872,414.3305Zm-142.5-150.686a3.073,3.073,0,0,0-3.07,3.07v142.5a3.073,3.073,0,0,0,3.07,3.07h142.5a3.073,3.073,0,0,0,3.07-3.07v-142.5a3.073,3.073,0,0,0-3.07-3.07Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#ccc"
-                                />
-                                <rect
-                                    id="bb28937d-932f-4fdf-befe-f406e51091fe"
-                                    data-name="Rectangle 1"
-                                    x="218.56201"
-                                    y="447.10197"
-                                    width="218.552"
-                                    height="2.047"
-                                    fill="#ccc"
-                                />
-                                <circle
-                                    id="fcef55fc-4968-45b2-93bb-1a1080c85fc7"
-                                    data-name="Ellipse 2"
-                                    cx="225.46401"
-                                    cy="427.41999"
-                                    r="6.902"
-                                    fill="#6c63ff"
-                                />
-                                <rect
-                                    id="ff33d889-4c74-4b91-85ef-b4882cc8fe76"
-                                    data-name="Rectangle 2"
-                                    x="218.56201"
-                                    y="516.11803"
-                                    width="218.552"
-                                    height="2.047"
-                                    fill="#ccc"
-                                />
-                                <circle
-                                    id="e8fa0310-b872-4adf-aedd-0c6eda09f3b8"
-                                    data-name="Ellipse 3"
-                                    cx="225.46401"
-                                    cy="496.43702"
-                                    r="6.902"
-                                    fill="#6c63ff"
-                                />
-                                <path
-                                    d="M660.69043,671.17188H591.62207a4.50493,4.50493,0,0,1-4.5-4.5v-24.208a4.50492,4.50492,0,0,1,4.5-4.5h69.06836a4.50491,4.50491,0,0,1,4.5,4.5v24.208A4.50492,4.50492,0,0,1,660.69043,671.17188Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#6c63ff"
-                                />
-                                <circle
-                                    id="e12ee00d-aa4a-4413-a013-11d20b7f97f7"
-                                    data-name="Ellipse 7"
-                                    cx="247.97799"
-                                    cy="427.41999"
-                                    r="6.902"
-                                    fill="#6c63ff"
-                                />
-                                <circle
-                                    id="f58f497e-6949-45c8-be5f-eee2aa0f6586"
-                                    data-name="Ellipse 8"
-                                    cx="270.492"
-                                    cy="427.41999"
-                                    r="6.902"
-                                    fill="#6c63ff"
-                                />
-                                <circle
-                                    id="b4d4939a-c6e6-4f4d-ba6c-e8b05485017d"
-                                    data-name="Ellipse 9"
-                                    cx="247.97799"
-                                    cy="496.43702"
-                                    r="6.902"
-                                    fill="#6c63ff"
-                                />
-                                <circle
-                                    id="aff120b1-519b-4e96-ac87-836aa55663de"
-                                    data-name="Ellipse 10"
-                                    cx="270.492"
-                                    cy="496.43702"
-                                    r="6.902"
-                                    fill="#6c63ff"
-                                />
-                                <path
-                                    id="f1094013-1297-477a-ac57-08eac07c4bd5"
-                                    data-name="Path 88"
-                                    d="M969.642,823.53851H251.656c-1.537,0-2.782-.546-2.782-1.218s1.245-1.219,2.782-1.219H969.642c1.536,0,2.782.546,2.782,1.219S971.178,823.53851,969.642,823.53851Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#3f3d56"
-                                />
-                                <path
-                                    d="M792.25256,565.92292a10.09371,10.09371,0,0,1,1.41075.78731l44.8523-19.14319,1.60093-11.81526,17.92157-.10956-1.05873,27.0982-59.19987,15.65584a10.60791,10.60791,0,0,1-.44749,1.20835,10.2346,10.2346,0,1,1-5.07946-13.68169Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#ffb8b8"
-                                />
-                                <polygon
-                                    points="636.98 735.021 624.72 735.021 618.888 687.733 636.982 687.734 636.98 735.021"
-                                    fill="#ffb8b8"
-                                />
-                                <path
-                                    d="M615.96281,731.51778h23.64387a0,0,0,0,1,0,0v14.88687a0,0,0,0,1,0,0H601.076a0,0,0,0,1,0,0v0A14.88686,14.88686,0,0,1,615.96281,731.51778Z"
-                                    fill="#2f2e41"
-                                />
-                                <polygon
-                                    points="684.66 731.557 672.459 732.759 662.018 686.271 680.025 684.497 684.66 731.557"
-                                    fill="#ffb8b8"
-                                />
-                                <path
-                                    d="M891.68576,806.12757h23.64387a0,0,0,0,1,0,0v14.88687a0,0,0,0,1,0,0H876.7989a0,0,0,0,1,0,0v0A14.88686,14.88686,0,0,1,891.68576,806.12757Z"
-                                    transform="translate(-303.00873 15.2906) rotate(-5.62529)"
-                                    fill="#2f2e41"
-                                />
-                                <circle
-                                    cx="640.3925"
-                                    cy="384.57375"
-                                    r="24.56103"
-                                    fill="#ffb8b8"
-                                />
-                                <path
-                                    d="M849.55636,801.91945a4.47086,4.47086,0,0,1-4.415-3.69726c-6.34571-35.22559-27.08789-150.40528-27.584-153.59571a1.42684,1.42684,0,0,1-.01562-.22168v-8.58789a1.489,1.489,0,0,1,.27929-.87207l2.74024-3.83789a1.47845,1.47845,0,0,1,1.14355-.625c15.62207-.73242,66.78418-2.8789,69.25586.209h0c2.48242,3.10351,1.60547,12.50683,1.4043,14.36035l.00977.19336,22.98535,146.99512a4.51238,4.51238,0,0,1-3.71485,5.13476l-14.35644,2.36524a4.52127,4.52127,0,0,1-5.02539-3.09278c-4.44043-14.18847-19.3291-61.918-24.48926-80.38672a.49922.49922,0,0,0-.98047.13868c.25781,17.60546.88086,62.52343,1.0957,78.0371l.02344,1.6709a4.51811,4.51811,0,0,1-4.09277,4.53614l-13.84375,1.25781C849.83565,801.91359,849.695,801.91945,849.55636,801.91945Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#2f2e41"
-                                />
-                                <path
-                                    id="ae7af94f-88d7-4204-9f07-e3651de85c05"
-                                    data-name="Path 99"
-                                    d="M852.38089,495.2538c-4.28634,2.548-6.85116,7.23043-8.32276,11.9951a113.681,113.681,0,0,0-4.88444,27.15943l-1.55553,27.60021-19.25508,73.1699c16.68871,14.1207,26.31542,10.91153,48.78049-.63879s25.03222,3.85117,25.03222,3.85117l4.49236-62.25839,6.41837-68.03232a30.16418,30.16418,0,0,0-4.86143-4.67415,49.65848,49.65848,0,0,0-42.44229-8.99538Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#ffffff"
-                                />
-                                <path
-                                    d="M846.12661,580.70047a10.52561,10.52561,0,0,1,1.50061.70389l44.34832-22.1972.736-12.02551,18.2938-1.26127.98041,27.4126L852.7199,592.93235a10.4958,10.4958,0,1,1-6.59329-12.23188Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#ffb8b8"
-                                />
-                                <path
-                                    id="a6768b0e-63d0-4b31-8462-9b2e0b00f0fd"
-                                    data-name="Path 101"
-                                    d="M902.76552,508.41151c10.91151,3.85117,12.83354,45.57369,12.83354,45.57369-12.8367-7.06036-28.24139,4.49318-28.24139,4.49318s-3.20916-10.91154-7.06034-25.03223a24.52987,24.52987,0,0,1,5.13436-23.10625S891.854,504.558,902.76552,508.41151Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#ffffff"
-                                />
-                                <path
-                                    id="bfd7963f-0cf8-4885-9d3a-2c00bccda2e3"
-                                    data-name="Path 102"
-                                    d="M889.99122,467.53052c-3.06-2.44837-7.23517,2.00173-7.23517,2.00173l-2.4484-22.03349s-15.30095,1.8329-25.0935-.61161-11.32255,8.87513-11.32255,8.87513a78.57978,78.57978,0,0,1-.30582-13.77092c.61158-5.50838,8.56838-11.01675,22.6451-14.68932S887.6518,439.543,887.6518,439.543C897.44542,444.43877,893.05121,469.97891,889.99122,467.53052Z"
-                                    transform="translate(-227.576 -76.46149)"
-                                    fill="#2f2e41"
-                                />
-                            </svg>
-                        </div>
-                        <div className="w-full md:w-1/2 py-10 px-5 md:px-10">
-                            <div className="text-center mb-10">
-                                <h1 className="font-bold text-3xl text-gray-900">
-                                    REGISTER
-                                </h1>
-                                <p>Enter your information to register</p>
-                            </div>
-                            <form onSubmit={phoneHandle(onPhoneVaild)}>
-                                <div className="flex -mx-3">
-                                    <div className="w-full px-3 mb-5">
-                                        <label className="text-xs font-semibold px-1">
-                                            휴대전화
-                                        </label>
-                                        <div className="flex">
-                                            <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
-                                                <i className="mdi mdi-account-outline text-gray-400 text-lg"></i>
-                                            </div>
-                                            <input
-                                                {...register("phone", {
-                                                    required: true,
-                                                })}
-                                                type="tel"
-                                                className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
-                                                placeholder="010-1234-1234"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex -mx-3">
-                                    <div className="w-full px-3 mb-5">
-                                        <button className="block w-full max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold">
-                                            회원가입
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                            {/* <form onSubmit={handleSubmit(onVaild)}>
-                                <div className="flex -mx-3">
-                                    <div className="w-full px-3 mb-5">
-                                        <label className="text-xs font-semibold px-1">
-                                            이름
-                                        </label>
-                                        <div className="flex">
-                                            <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
-                                                <i className="mdi mdi-account-outline text-gray-400 text-lg"></i>
-                                            </div>
-                                            <input
-                                                {...register("name", {
-                                                    required: true,
-                                                })}
-                                                type="text"
-                                                className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
-                                                placeholder="홍길동"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex -mx-3">
-                                    <div className="w-full px-3 mb-5">
-                                        <label className="text-xs font-semibold px-1">
-                                            이메일
-                                        </label>
-                                        <div className="flex">
-                                            <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
-                                                <i className="mdi mdi-email-outline text-gray-400 text-lg"></i>
-                                            </div>
-                                            <input
-                                                {...register("email", {
-                                                    required: true,
-                                                })}
-                                                type="email"
-                                                className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
-                                                placeholder="abc@example.com"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex -mx-3">
-                                    <div className="w-full px-3 mb-5">
-                                        <label className="text-xs font-semibold px-1">
-                                            비밀번호
-                                        </label>
-                                        <div className="flex">
-                                            <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
-                                                <i className="mdi mdi-lock-outline text-gray-400 text-lg"></i>
-                                            </div>
-                                            <input
-                                                {...register("password", {
-                                                    required: true,
-                                                })}
-                                                type="password"
-                                                className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
-                                                placeholder="************"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex -mx-3">
-                                    <div className="w-full px-3 mb-12">
-                                        <label className="text-xs font-semibold px-1">
-                                            비밀번호 확인
-                                        </label>
-                                        <div className="flex">
-                                            <div className="w-10 z-10 pl-1 text-center pointer-events-none flex items-center justify-center">
-                                                <i className="mdi mdi-lock-outline text-gray-400 text-lg"></i>
-                                            </div>
-                                            <input
-                                                {...register("rePassword", {
-                                                    required: true,
-                                                })}
-                                                type="password"
-                                                className="w-full -ml-10 pl-10 pr-3 py-2 rounded-lg border-2 border-gray-200 outline-none focus:border-indigo-500"
-                                                placeholder="************"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex -mx-3">
-                                    <div className="w-full px-3 mb-5">
-                                        <button className="block w-full max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold">
-                                            회원가입
-                                        </button>
-                                    </div>
-                                </div>
-                            </form> */}
-                        </div>
+        <div className="bg-gray-200 w-full min-h-screen flex items-center justify-center">
+            <div className="bg-white w-5/6 md:w-3/4 lg:w-2/3 xl:w-[500px] 2xl:w-[550px] mt-4 mx-auto px-16 py-4 rounded-lg shadow-2xl">
+                <h2 className="text-center text-2xl font-bold tracking-wide text-gray-800">
+                    Sign Up
+                </h2>
+                <p className="text-center text-sm text-gray-600 mt-2">
+                    Already have an account?{" "}
+                    <Link
+                        href="./sign-in"
+                        className="text-blue-600 hover:text-blue-700 hover:underline"
+                    >
+                        Sign in here
+                    </Link>
+                </p>
+                <form
+                    onSubmit={handleSubmit(onVaild)}
+                    className="my-6 text-sm w-full space-y-4"
+                >
+                    <div className="flex flex-col">
+                        <label htmlFor="name" className="text-gray-700">
+                            Name
+                        </label>
+                        <input
+                            {...register("name", {
+                                required: "필수 정보입니다.",
+                                pattern: {
+                                    value: /^[가-힣]{2,7}$/,
+                                    message: "이름은 2-7자 이어야합니다",
+                                },
+                            })}
+                            type="text"
+                            className="mt-2 p-2 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
+                            placeholder="홍길동"
+                        />
+                        <span className="text-red-400 text-xs my-0 p-0 ">
+                            {errors.name?.message}
+                        </span>
                     </div>
+                    <div className="flex flex-col">
+                        <label htmlFor="email" className="text-gray-700">
+                            Email Address
+                        </label>
+                        <input
+                            {...register("email", {
+                                required: "필수 정보입니다.",
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i,
+                                    message: "이메일 형식이 아닙니다.",
+                                },
+                            })}
+                            type="email"
+                            className="mt-2 p-2 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
+                            placeholder="abc@example.com"
+                        />
+                        <span className="text-red-400 text-xs my-0 p-0 ">
+                            {errors.email?.message}
+                        </span>
+                    </div>
+                    <div className="flex flex-col">
+                        <label htmlFor="password" className="text-gray-700">
+                            Password
+                        </label>
+                        <div className="relative flex items-center">
+                            <input
+                                {...register("password", {
+                                    required: "필수 정보입니다.",
+                                    pattern: {
+                                        value: /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,16}$/,
+                                        message:
+                                            "비밀번호는 8-16자 영어 대 소문자, 숫자, 특수문자를 사용하세요",
+                                    },
+                                })}
+                                type={seePassword ? "type" : "password"}
+                                className="w-full mt-2 p-2 border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
+                                placeholder="비밀번호를 입력하세요."
+                            />
+                            <button
+                                onClick={handleSeePassword}
+                                className=" mt-2 absolute right-2 bg-transparent  text-gray-700 "
+                            >
+                                {seePassword ? (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 640 512"
+                                        className="w-5 h-5 transition"
+                                    >
+                                        <path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z" />
+                                    </svg>
+                                ) : (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 576 512"
+                                        className="w-5 h-5 transition"
+                                    >
+                                        <path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z" />
+                                    </svg>
+                                )}
+                            </button>
+                        </div>
+                        <span className="text-red-400 text-xs my-0 p-0 ">
+                            {errors.password?.message}
+                        </span>
+                    </div>
+                    <div className="flex flex-col">
+                        <label
+                            htmlFor="password_confirmation"
+                            className="text-gray-700"
+                        >
+                            Password Confirmation
+                        </label>
+                        <div className="relative flex items-center">
+                            <input
+                                {...register("passwordConfirm", {
+                                    required: "필수 정보입니다.",
+                                    validate: (value) =>
+                                        value === userPassword.current ||
+                                        "비밀번호가 일치하지 않습니다.",
+                                })}
+                                type={seePasswordConfirm ? "text" : "password"}
+                                className="mt-2 p-2 border w-full border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 rounded text-sm text-gray-900"
+                                placeholder="비밀번호를 재입력하세요."
+                            />
+                            <button
+                                onClick={handleSeePasswordConfirm}
+                                className="mt-2 absolute right-2 bg-transparent  text-gray-700 "
+                            >
+                                {seePasswordConfirm ? (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 640 512"
+                                        className="w-5 h-5"
+                                    >
+                                        <path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z" />
+                                    </svg>
+                                ) : (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 576 512"
+                                        className="w-5 h-5"
+                                    >
+                                        <path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z" />
+                                    </svg>
+                                )}
+                            </button>
+                        </div>
+                        <span className="text-red-400 text-xs my-0 p-0 ">
+                            {errors.passwordConfirm?.message}
+                        </span>
+                    </div>
+                    <div className="flex items-center justify-end mb-2">
+                        <input
+                            type="checkbox"
+                            id="remember_me"
+                            className="mr-2 focus:ring-0 rounded"
+                        />
+                        <label className="text-gray-700" htmlFor="remember_me">
+                            I accept the{" "}
+                            <a
+                                href="#"
+                                className="text-blue-600 hover:text-blue-700 hover:underline"
+                            >
+                                terms
+                            </a>{" "}
+                            and{" "}
+                            <a
+                                href="#"
+                                className="text-blue-600 hover:text-blue-700 hover:underline"
+                            >
+                                privacy policy
+                            </a>
+                        </label>
+                    </div>
+                    <button className="text-lg text-white w-full mt-2 p-2 border focus:outline-none bg-blue-400 focus:ring-2 focus:ring-offset-2 focus:ring-blue-300 focus:border-blue-300  hover:border-blue-300 rounded-lg ">
+                        Register
+                    </button>
+                </form>
+                <div className="flex items-center justify-between">
+                    <div className="w-full h-[1px] bg-gray-300"></div>
+                    <span className="text-sm mx-6 text-gray-400">OR</span>
+                    <div className="w-full h-[1px] bg-gray-300"></div>
+                </div>
+                <div className="text-sm">
+                    <a
+                        href="#"
+                        className="flex items-center justify-center space-x-2 text-gray-600 my-2 py-2 bg-gray-100 hover:bg-gray-200 rounded"
+                    >
+                        <svg
+                            className="w-5 h-5"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 326667 333333"
+                            shapeRendering="geometricPrecision"
+                            textRendering="geometricPrecision"
+                            imageRendering="optimizeQuality"
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                        >
+                            <path
+                                d="M326667 170370c0-13704-1112-23704-3518-34074H166667v61851h91851c-1851 15371-11851 38519-34074 54074l-311 2071 49476 38329 3428 342c31481-29074 49630-71852 49630-122593m0 0z"
+                                fill="#4285f4"
+                            ></path>
+                            <path
+                                d="M166667 333333c44999 0 82776-14815 110370-40370l-52593-40742c-14074 9815-32963 16667-57777 16667-44074 0-81481-29073-94816-69258l-1954 166-51447 39815-673 1870c27407 54444 83704 91852 148890 91852z"
+                                fill="#34a853"
+                            ></path>
+                            <path
+                                d="M71851 199630c-3518-10370-5555-21482-5555-32963 0-11482 2036-22593 5370-32963l-93-2209-52091-40455-1704 811C6482 114444 1 139814 1 166666s6482 52221 17777 74814l54074-41851m0 0z"
+                                fill="#fbbc04"
+                            ></path>
+                            <path
+                                d="M166667 64444c31296 0 52406 13519 64444 24816l47037-45926C249260 16482 211666 1 166667 1 101481 1 45185 37408 17777 91852l53889 41853c13520-40185 50927-69260 95001-69260m0 0z"
+                                fill="#ea4335"
+                            ></path>
+                        </svg>
+                        <span>Sign up with Google</span>
+                    </a>
+                    <a
+                        href="#"
+                        className="flex items-center justify-center space-x-2 text-gray-600 my-2 py-2 bg-gray-100 hover:bg-gray-200 rounded"
+                    >
+                        <svg
+                            className="w-5 h-5"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlnsXlink="http://www.w3.org/1999/xlink"
+                            viewBox="0 0 124.8 123.36"
+                        >
+                            <defs>
+                                <clipPath
+                                    id="clip-path"
+                                    transform="translate(0.69 0.51)"
+                                >
+                                    <path
+                                        className="cls-1"
+                                        d="M27.75,0H95.13a27.83,27.83,0,0,1,27.75,27.75V94.57a27.83,27.83,0,0,1-27.75,27.74H27.75A27.83,27.83,0,0,1,0,94.57V27.75A27.83,27.83,0,0,1,27.75,0Z"
+                                    ></path>
+                                </clipPath>
+                                <clipPath
+                                    id="clip-path-2"
+                                    transform="translate(0.69 0.51)"
+                                >
+                                    <rect
+                                        className="cls-2"
+                                        width="122.88"
+                                        height="122.31"
+                                    ></rect>
+                                </clipPath>
+                            </defs>
+                            <g className="cls-3">
+                                <g className="cls-4">
+                                    <image
+                                        width="260"
+                                        height="257"
+                                        transform="matrix(0.48, 0, 0, -0.48, 0, 123.36)"
+                                        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQQAAAEBCAYAAACexdu5AAAACXBIWXMAABcRAAAXEQHKJvM/AAAEFUlEQVR4Xu3dwXEdIRBFUb4kZ+HwHJbDcxrSeAG+hctVJgDO2cyG9aumoYfX8zzP68evAdzr+fl9jDHG22EdcJGPMcZ4vV6ndcAFPubn+f8q4Aq2DEBmhWDLAAxbBmCzAkGFAKgQgM3qIRxWAVdwygBkVQhyAdBUBDZKAyCaikBmIDxfh2XADda0o50DUFNRhQBoKgIbgQBEIABx7AhEhQBEIACZW4a398My4AYqBCACAYhZBiCrh6BQAFQIwGZOO55WAVewVwDin4pAVlNRIACaisDG689ANBWBeLkJyOoheP0Z8Bw8sNFUBKJCAKKbCEQgAHHsCGQ99npaBtxAaQDEsSMQ045ANBWBqBCAKA2AeA4eiAoBiEAAIhCA6CEAUSEAWcNNcgEwywBs3FQEYpYBiAoByHr9WYUAqBCAzXqXwSkD4KEWYOPqMhDHjkBsGYCYZQCyjh1VCEAXk3QVAT0EYCMQgDh2BLIqBLMMQBXC+2EZcAPTjkD0EICsm4qnZcANlAZAjD8D0VQEoqkIxNVlIEoDIJqKQOY9hNMq4AoqBCB6CEDWL9RMOwIqBGDjbUcgq6noYhJglgHYaCoCWRXC52EZcIP1xyRNRaAK4bAKuIKry0D8IAWIl5uAqBCA+IUakFUh6CoCph2BzbqHYMsAuIcAbGwZgPhBChAVApA17XhaBtxAhQBEIAARCEAEAhCzDEBMOwKxZQAiEIAYbgJilgGILQOQOctwWgVcQQ8BiC0DkPUcvFwA+smql5sALzcBG8NNQGwZgKx/KtoyAO4hABulARBNRSCaikDcQwCiqQjElgHIqhDeD8uAG6xfqKkQADcVgY2mIhBNRSCaikBWhfB5WAbcwCwDEMcLQNax42kZcAMVAhCBAMTFJCDr5Sb3EAA3FYHNPGVQIQBDUxHYuLoMRFMRiKYiEBUCEBeTgDhlADLvIZxWAVfwgxQgtgxANBWBzED4clMR7vZtjOEeArBxUxGIHgIQ/0MAYvwZGLUTD6uAi8xY0EQAhqYisHEPAYimIjDGmEWB8Wcgxp+BOHYEoqkIRFMRGH82C7YMQAw3AfkYY4zH/xDgcnOzoEIAYpYBiKYiEIEAxJYBiAoBiGlHILYMQPxTEYiXm4Dx103F8aa3CDhlADa2DMCwZQD+oUIAxt/jz/9dCNzCb9iBaB4AEQhAzDIAUSEAEQhAnDIAUSEAcTEJiFMGIAIByBpuOqwCrqBCACIQgNgyAFEhAHExCYhAADJvKtoyAEOFAGwEAhCBAEQgAHEPAYgKAYhAACIQgAgEIAIBiEAAIhCACAQgAgGIQAAiEIAIBCACAYhAACIQgAgEIAIBiEAAIhCACAQgAgGIQAAiEIAIBCACAYhAACIQgAgEIAIBiEAAIhCA/AafC2PbZ0osjAAAAABJRU5ErkJggg=="
+                                    ></image>
+                                </g>
+                            </g>
+                            <path
+                                className="cls-5"
+                                d="M85.36,78.92l2.72-17.76H71V49.63c0-4.86,2.38-9.59,10-9.59H88.8V24.92a94.45,94.45,0,0,0-13.75-1.2c-14,0-23.21,8.5-23.21,23.9V61.16H36.24V78.92h15.6v43.57H71V78.92Z"
+                                transform="translate(0.69 0.51)"
+                            ></path>
+                        </svg>
+                        <span>Sign up with Facebook</span>
+                    </a>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 
