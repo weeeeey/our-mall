@@ -18,18 +18,36 @@ const useMutation = <T = any>(url: string): UseMutationResult<T> => {
     });
     const mutation = (data: any) => {
         setState((prev) => ({ ...prev, loading: true }));
-        axios({
-            url,
-            method: "post",
-            data,
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
         })
-            .then((response) => response.data.catch(() => {}))
-            .then((datas) =>
-                setState((prev) => ({ ...prev, datas, loading: false }))
+            .then((response) => response.json().catch(() => {}))
+            .then((data) =>
+                setState((prev) => ({ ...prev, data, loading: false }))
             )
             .catch((error) =>
                 setState((prev) => ({ ...prev, error, loading: false }))
             );
+
+        // axios({
+        //     url,
+        //     method: "post",
+        //     data,
+        // })
+        //     .then((response) => {
+        //         console.log(response);
+        //         return response.data.catch(() => {});
+        //     })
+        //     .then((data) =>
+        //         setState((prev) => ({ ...prev, data, loading: false }))
+        //     )
+        //     .catch((error) =>
+        //         setState((prev) => ({ ...prev, error, loading: false }))
+        //     );
     };
     return [mutation, { ...state }];
 };

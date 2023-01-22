@@ -1,9 +1,10 @@
 import { NextPage } from "next";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import useMutation from "@/lib/client/useMutation";
+import { useRouter } from "next/router";
 
 interface UserProps {
     name: string;
@@ -16,20 +17,23 @@ interface SignUpMutationResult {
 }
 
 const SignUp: NextPage = () => {
+    const router = useRouter();
+    const [checkbox, setCheckbox] = useState(false); //약관 동의여부 체크
+    const [seePassword, setSeePassword] = useState(false); // 비밀번호 see 기능
+    const [seePasswordConfirm, setSeePasswordConfirm] = useState(false); //비밀번호 재확인 see 기능
+
     const [signUp, { loading, data, error }] =
-        useMutation<SignUpMutationResult>("/api/sign-up");
+        useMutation<SignUpMutationResult>("/api/sign-up"); // 정보 다 입력시 useMutation으로 등록(POST) 요청
+
     const {
         register,
         handleSubmit,
         watch,
         formState: { errors },
-    } = useForm<UserProps>(); //
+    } = useForm<UserProps>();
 
     const userPassword = useRef(""); //비밀번호 재확인을 위해 비밀번호 실시간 감지
     userPassword.current = watch("password");
-
-    const [seePassword, setSeePassword] = useState(false); // 비밀번호 see 기능
-    const [seePasswordConfirm, setSeePasswordConfirm] = useState(false); //비밀번호 재확인 see 기능
 
     const handleSeePassword = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -41,10 +45,20 @@ const SignUp: NextPage = () => {
         e.preventDefault();
         setSeePasswordConfirm((prev) => !prev);
     };
+    const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setCheckbox(e.target.checked);
+        console.log(data);
+    };
     const onVaild = (formData: UserProps) => {
         if (loading) return;
+        if (!checkbox) return;
         signUp(formData);
     };
+    useEffect(() => {
+        if (data?.ok) {
+            router.push("/sign-in");
+        } //회원가입 성공시 로그인 페이지로 이동
+    }, [data, router]);
 
     return (
         <div className="bg-gray-200 w-full min-h-screen flex items-center justify-center">
@@ -199,6 +213,7 @@ const SignUp: NextPage = () => {
                     <div className="flex items-center justify-end mb-2">
                         <input
                             type="checkbox"
+                            onChange={handleCheckbox}
                             id="remember_me"
                             className="mr-2 focus:ring-0 rounded"
                         />
