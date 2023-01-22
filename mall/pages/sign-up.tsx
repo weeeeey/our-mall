@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import React from "react";
 import { useForm } from "react-hook-form";
+import useMutation from "@/lib/client/useMutation";
 
 interface UserProps {
     name: string;
@@ -10,8 +11,13 @@ interface UserProps {
     password: string;
     passwordConfirm: string;
 }
+interface SignUpMutationResult {
+    ok: boolean;
+}
 
 const SignUp: NextPage = () => {
+    const [signUp, { loading, data, error }] =
+        useMutation<SignUpMutationResult>("/api/sign-up");
     const {
         register,
         handleSubmit,
@@ -36,7 +42,8 @@ const SignUp: NextPage = () => {
         setSeePasswordConfirm((prev) => !prev);
     };
     const onVaild = (formData: UserProps) => {
-        console.log(formData); //axios로 db에 보낼 내용
+        if (loading) return;
+        signUp(formData);
     };
 
     return (
