@@ -47,7 +47,6 @@ const SignUp: NextPage = () => {
     };
     const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCheckbox(e.target.checked);
-        console.log(data);
     };
     const onVaild = (formData: UserProps) => {
         if (loading) return;
@@ -62,7 +61,7 @@ const SignUp: NextPage = () => {
 
     return (
         <div className="bg-gray-200 w-full min-h-screen flex items-center justify-center">
-            <div className="bg-white w-5/6 md:w-3/4 lg:w-2/3 xl:w-[500px] 2xl:w-[550px] mt-4 mx-auto px-16 py-4 rounded-lg shadow-2xl">
+            <div className="bg-white w-5/6 md:w-3/4 lg:w-2/3 xl:w-[500px] 2xl:w-[550px] mt-4 mx-auto px-16 py-8 rounded-lg shadow-2xl">
                 <h2 className="text-center text-2xl font-bold tracking-wide text-gray-800">
                     Sign Up
                 </h2>
