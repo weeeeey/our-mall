@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { signIn, useSession } from "next-auth/react";
 
 interface LoginProps {
     email: string;
@@ -10,7 +11,20 @@ interface LoginProps {
 const SignUp: NextPage = () => {
     const { register, handleSubmit } = useForm<LoginProps>();
 
-    const onVaild = () => {};
+    const onVaild = async (form: LoginProps) => {
+        const email = form.email;
+        const password = form.password;
+
+        // signIn이 [...nextAuth.ts]에 정의된 Provider를 호출하는 함수.
+        // 그 중에서도 따옴표 사이에 적힌 ID값에 해당하는 Provider를 호출함
+        const response = await signIn("email-password-credential", {
+            email,
+            password,
+            redirect: false,
+            // redirect false로 인해 callback URL로 이동안함
+        });
+        console.log(response);
+    };
     return (
         <>
             <div className="bg-gray-200 w-full min-h-screen flex items-center justify-center ">
@@ -57,7 +71,7 @@ const SignUp: NextPage = () => {
                                         Password
                                     </label>
                                     <input
-                                        {...register("email", {
+                                        {...register("password", {
                                             required: true,
                                         })}
                                         type="password"

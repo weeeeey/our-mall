@@ -32,8 +32,8 @@ const SignUp: NextPage = () => {
         formState: { errors },
     } = useForm<UserProps>();
 
-    const userPassword = useRef(""); //비밀번호 재확인을 위해 비밀번호 실시간 감지
-    userPassword.current = watch("password");
+    const userPassword = useRef<string | null>(null); //비밀번호 재확인을 위해 비밀번호 실시간 감지
+    userPassword.current = watch("password", "");
 
     const handleSeePassword = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();

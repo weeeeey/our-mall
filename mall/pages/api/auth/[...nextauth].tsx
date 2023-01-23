@@ -51,7 +51,10 @@ import { NextApiRequest } from "next/types";
 export default NextAuth({
     providers: [
         CredentialsProvider({
-            name: "Credentials",
+            id: "email-password-credential",
+            name: "Credentials", //NextAuth에서 만들어주는 Form 태그의 로그인 버튼에 노출될 텍스트
+            type: "credentials",
+
             credentials: {
                 email: {
                     label: "email",
@@ -70,29 +73,36 @@ export default NextAuth({
                 const exUser = await client.user.findUnique({
                     where: { email },
                 });
-                if (!exUser) throw new Error("존자해자 않는 아이디입니다");
+                if (!exUser)
+                    throw new Error("아이디나 비밀번호가 불일치합니다");
 
                 const match = await bcrypt.compare(password, exUser.password);
-                if (!match) throw new Error("비밀번호가 불일치합니다");
+                if (!match) throw new Error("아이디나 비밀번호가 불일치합니다");
 
                 console.log(exUser);
                 return exUser;
             },
         }),
     ],
-    // callbacks: {
-    //     async session({ session }) {
-    //         const exUser = await client.user.findUnique({
-    //             where: {
-    //                 email: session.user?.email!,
-    //             },
-    //             select: {
-    //                 email: true,
-    //                 name: true,
-    //             },
-    //         });
-    //         session.user = exUser!;
-    //         return session;
-    //     },
-    // },
+    callbacks: {
+        async jwt({ token }) {
+            return token;
+        },
+        async session({ session }) {
+            const exUser = await client.user.findUnique({
+                where: {
+                    email: session.user?.email!,
+                },
+                select: {
+                    email: true,
+                    name: true,
+                },
+            });
+            session.user = exUser!;
+            return session;
+        },
+    },
+    pages: {
+        signIn: "/sign-in",
+    },
 });
