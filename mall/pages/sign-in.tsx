@@ -2,6 +2,8 @@ import { NextPage } from "next";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 interface LoginProps {
     email: string;
@@ -10,6 +12,8 @@ interface LoginProps {
 
 const SignUp: NextPage = () => {
     const { register, handleSubmit } = useForm<LoginProps>();
+    const { data: session } = useSession();
+    const router = useRouter();
 
     const onVaild = async (form: LoginProps) => {
         const email = form.email;
@@ -23,8 +27,12 @@ const SignUp: NextPage = () => {
             redirect: false,
             // redirect false로 인해 callback URL로 이동안함
         });
-        console.log(response);
     };
+    useEffect(() => {
+        if (session) {
+            router.push("/");
+        }
+    }, [router, session]);
     return (
         <>
             <div className="bg-gray-200 w-full min-h-screen flex items-center justify-center ">
