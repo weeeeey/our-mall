@@ -1,6 +1,7 @@
 import withHandler, { ResponseType } from "@/lib/server/withHandler";
 import { NextApiRequest, NextApiResponse } from "next";
 import client from "@/lib/server/client";
+import bcrypt from "bcrypt";
 
 async function handler(
     req: NextApiRequest,
@@ -20,11 +21,13 @@ async function handler(
             ok: false,
         });
     }
+    const bcrypt = require("bcrypt");
+    const hash = bcrypt.hashSync(information.password, 12);
     const user = await client.user.create({
         data: {
             name: information.name,
             email: information.email,
-            password: information.password,
+            password: hash,
         },
     });
     console.log(user);
