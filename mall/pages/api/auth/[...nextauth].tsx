@@ -4,9 +4,10 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 
 import KakaoProvider from "next-auth/providers/kakao";
-import Adapters from "next-auth/adapters";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 export default NextAuth({
+    adapter: PrismaAdapter(client),
     providers: [
         CredentialsProvider({
             id: "email-password-credential",
@@ -45,7 +46,7 @@ export default NextAuth({
             clientSecret: process.env.KAKAO_CLIENT_SECRET,
         }),
     ],
-    adapter: Adapters.Prisma.Adaptter({ client }),
+
     callbacks: {
         /** 
         어떤 데이터를 넘겨주고 싶으면 jwt 토큰에 데이터를 유지하고 session에서 처리해주면 된다
