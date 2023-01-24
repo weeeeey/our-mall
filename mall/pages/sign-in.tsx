@@ -27,6 +27,8 @@ const SignUp: NextPage = () => {
             redirect: false,
             // redirect false로 인해 callback URL로 이동안함
         });
+        console.log(response);
+        console.log(session);
     };
     useEffect(() => {
         if (session) {

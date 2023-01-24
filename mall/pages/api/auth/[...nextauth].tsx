@@ -7,8 +7,12 @@ import KakaoProvider from "next-auth/providers/kakao";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 export default NextAuth({
-    adapter: PrismaAdapter(client),
+    // adapter: PrismaAdapter(client),
     providers: [
+        KakaoProvider({
+            clientId: process.env.KAKAO_CLIENT_ID,
+            clientSecret: process.env.KAKAO_CLIENT_SECRET,
+        }),
         CredentialsProvider({
             id: "email-password-credential",
             name: "Credentials", //NextAuth에서 만들어주는 Form 태그의 로그인 버튼에 노출될 텍스트
@@ -41,10 +45,6 @@ export default NextAuth({
                 return exUser;
             },
         }),
-        KakaoProvider({
-            clientId: process.env.KAKAO_CLIENT_ID,
-            clientSecret: process.env.KAKAO_CLIENT_SECRET,
-        }),
     ],
 
     callbacks: {
@@ -72,8 +72,9 @@ export default NextAuth({
             return session;
         },
     },
-    // pages: {
-    //     signIn: "/sign-in",
-    //     signOut: "/",
-    // },
+    pages: {
+        // signIn: "/sign-in",
+        signOut: "/",
+    },
+    secret: process.env.NEXTAUTH_SECRET,
 });
