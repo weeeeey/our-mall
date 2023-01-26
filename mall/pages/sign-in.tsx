@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import axios from "axios";
 
 interface LoginProps {
     email: string;
@@ -30,6 +31,7 @@ const SignUp: NextPage = () => {
         console.log(response);
         console.log(session);
     };
+
     useEffect(() => {
         if (session) {
             router.push("/");
