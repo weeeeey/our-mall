@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
+import useMutation from "@/lib/client/useMutation";
 
 interface LoginProps {
     email: string;
@@ -18,15 +19,11 @@ const SignUp: NextPage = () => {
     const { register, handleSubmit } = useForm<LoginProps>();
     const { data: session } = useSession();
     const router = useRouter();
-    const [login, setLogin] = useState(false);
+
+    const [confirm, { data, error, loading }] =
+        useMutation<LoginResult>("/api/auth/sign-in");
     const onVaild = async (form: LoginProps) => {
-        await axios({
-            method: "get",
-            url: "/api/auth/sign-in",
-            data: form,
-        })
-            .then((res) => console.log(res))
-            .catch((err) => console.log(err));
+        confirm(form);
     };
     const handleGoogleLogin = async (
         e: React.MouseEvent<HTMLButtonElement>
@@ -53,10 +50,11 @@ const SignUp: NextPage = () => {
     };
 
     useEffect(() => {
-        if (login || session) {
+        if (data?.ok || session) {
+            console.log(data);
             router.push("/");
         }
-    }, [router, session, login]);
+    }, [router, session, data]);
     return (
         <>
             <div className="bg-gray-200 w-full min-h-screen flex items-center justify-center ">
