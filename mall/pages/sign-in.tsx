@@ -3,40 +3,60 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import axios from "axios";
 
 interface LoginProps {
     email: string;
     password: string;
 }
-
+interface LoginResult {
+    ok: boolean;
+}
 const SignUp: NextPage = () => {
     const { register, handleSubmit } = useForm<LoginProps>();
     const { data: session } = useSession();
     const router = useRouter();
-
+    const [login, setLogin] = useState(false);
     const onVaild = async (form: LoginProps) => {
-        const email = form.email;
-        const password = form.password;
-
-        // signIn이 [...nextAuth.ts]에 정의된 Provider를 호출하는 함수.
-        // 그 중에서도 따옴표 사이에 적힌 ID값에 해당하는 Provider를 호출함
-        const response = await signIn("email-password-credential", {
-            email,
-            password,
+        await axios({
+            method: "get",
+            url: "/api/auth/sign-in",
+            data: form,
+        })
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
+    };
+    const handleGoogleLogin = async (
+        e: React.MouseEvent<HTMLButtonElement>
+    ) => {
+        e.preventDefault();
+        const response = await signIn("google", {
             redirect: false,
-            // redirect false로 인해 callback URL로 이동안함
         });
         console.log(response);
-        console.log(session);
+    };
+    const handleKakaoLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        const response = await signIn("kakao", {
+            redirect: false,
+        });
+        console.log(response);
+    };
+    const handleNaverLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        const response = await signIn("kakao", {
+            redirect: false,
+        });
+        console.log(response);
     };
 
     useEffect(() => {
-        if (session) {
+        if (login || session) {
             router.push("/");
         }
-    }, [router, session]);
+    }, [router, session, login]);
     return (
         <>
             <div className="bg-gray-200 w-full min-h-screen flex items-center justify-center ">
@@ -130,9 +150,9 @@ const SignUp: NextPage = () => {
                             <div className="w-full h-[1px] bg-gray-300"></div>
                         </div>
                         <div className="text-sm">
-                            <a
-                                href="#"
-                                className="flex items-center justify-center space-x-2 text-gray-600 my-2 py-2 bg-gray-100 hover:bg-gray-200 rounded"
+                            <button
+                                onClick={handleGoogleLogin}
+                                className="w-full flex items-center justify-center space-x-2 text-gray-600 my-2 py-2 bg-gray-100 hover:bg-gray-200 rounded"
                             >
                                 <svg
                                     className="w-5 h-5"
@@ -162,56 +182,31 @@ const SignUp: NextPage = () => {
                                     ></path>
                                 </svg>
                                 <span>Sign up with Google</span>
-                            </a>
-                            <a
-                                href="#"
-                                className="flex items-center justify-center space-x-2 text-gray-600 my-2 py-2 bg-gray-100 hover:bg-gray-200 rounded"
+                            </button>
+                            <button
+                                onClick={handleKakaoLogin}
+                                className="w-full flex items-center justify-center space-x-2 text-gray-600 my-2 py-2 bg-gray-100 hover:bg-gray-200 rounded"
                             >
-                                <svg
-                                    className="w-5 h-5"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    xmlnsXlink="http://www.w3.org/1999/xlink"
-                                    viewBox="0 0 124.8 123.36"
-                                >
-                                    <defs>
-                                        <clipPath
-                                            id="clip-path"
-                                            transform="translate(0.69 0.51)"
-                                        >
-                                            <path
-                                                className="cls-1"
-                                                d="M27.75,0H95.13a27.83,27.83,0,0,1,27.75,27.75V94.57a27.83,27.83,0,0,1-27.75,27.74H27.75A27.83,27.83,0,0,1,0,94.57V27.75A27.83,27.83,0,0,1,27.75,0Z"
-                                            ></path>
-                                        </clipPath>
-                                        <clipPath
-                                            id="clip-path-2"
-                                            transform="translate(0.69 0.51)"
-                                        >
-                                            <rect
-                                                className="cls-2"
-                                                width="122.88"
-                                                height="122.31"
-                                            ></rect>
-                                        </clipPath>
-                                    </defs>
-                                    <g className="cls-3">
-                                        <g className="cls-4">
-                                            <image
-                                                width="260"
-                                                height="257"
-                                                transform="matrix(0.48, 0, 0, -0.48, 0, 123.36)"
-                                                xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQQAAAEBCAYAAACexdu5AAAACXBIWXMAABcRAAAXEQHKJvM/AAAEFUlEQVR4Xu3dwXEdIRBFUb4kZ+HwHJbDcxrSeAG+hctVJgDO2cyG9aumoYfX8zzP68evAdzr+fl9jDHG22EdcJGPMcZ4vV6ndcAFPubn+f8q4Aq2DEBmhWDLAAxbBmCzAkGFAKgQgM3qIRxWAVdwygBkVQhyAdBUBDZKAyCaikBmIDxfh2XADda0o50DUFNRhQBoKgIbgQBEIABx7AhEhQBEIACZW4a398My4AYqBCACAYhZBiCrh6BQAFQIwGZOO55WAVewVwDin4pAVlNRIACaisDG689ANBWBeLkJyOoheP0Z8Bw8sNFUBKJCAKKbCEQgAHHsCGQ99npaBtxAaQDEsSMQ045ANBWBqBCAKA2AeA4eiAoBiEAAIhCA6CEAUSEAWcNNcgEwywBs3FQEYpYBiAoByHr9WYUAqBCAzXqXwSkD4KEWYOPqMhDHjkBsGYCYZQCyjh1VCEAXk3QVAT0EYCMQgDh2BLIqBLMMQBXC+2EZcAPTjkD0EICsm4qnZcANlAZAjD8D0VQEoqkIxNVlIEoDIJqKQOY9hNMq4AoqBCB6CEDWL9RMOwIqBGDjbUcgq6noYhJglgHYaCoCWRXC52EZcIP1xyRNRaAK4bAKuIKry0D8IAWIl5uAqBCA+IUakFUh6CoCph2BzbqHYMsAuIcAbGwZgPhBChAVApA17XhaBtxAhQBEIAARCEAEAhCzDEBMOwKxZQAiEIAYbgJilgGILQOQOctwWgVcQQ8BiC0DkPUcvFwA+smql5sALzcBG8NNQGwZgKx/KtoyAO4hABulARBNRSCaikDcQwCiqQjElgHIqhDeD8uAG6xfqKkQADcVgY2mIhBNRSCaikBWhfB5WAbcwCwDEMcLQNax42kZcAMVAhCBAMTFJCDr5Sb3EAA3FYHNPGVQIQBDUxHYuLoMRFMRiKYiEBUCEBeTgDhlADLvIZxWAVfwgxQgtgxANBWBzED4clMR7vZtjOEeArBxUxGIHgIQ/0MAYvwZGLUTD6uAi8xY0EQAhqYisHEPAYimIjDGmEWB8Wcgxp+BOHYEoqkIRFMRGH82C7YMQAw3AfkYY4zH/xDgcnOzoEIAYpYBiKYiEIEAxJYBiAoBiGlHILYMQPxTEYiXm4Dx103F8aa3CDhlADa2DMCwZQD+oUIAxt/jz/9dCNzCb9iBaB4AEQhAzDIAUSEAEQhAnDIAUSEAcTEJiFMGIAIByBpuOqwCrqBCACIQgNgyAFEhAHExCYhAADJvKtoyAEOFAGwEAhCBAEQgAHEPAYgKAYhAACIQgAgEIAIBiEAAIhCACAQgAgGIQAAiEIAIBCACAYhAACIQgAgEIAIBiEAAIhCACAQgAgGIQAAiEIAIBCACAYhAACIQgAgEIAIBiEAAIhCA/AafC2PbZ0osjAAAAABJRU5ErkJggg=="
-                                            ></image>
-                                        </g>
-                                    </g>
-                                    <path
-                                        className="cls-5"
-                                        d="M85.36,78.92l2.72-17.76H71V49.63c0-4.86,2.38-9.59,10-9.59H88.8V24.92a94.45,94.45,0,0,0-13.75-1.2c-14,0-23.21,8.5-23.21,23.9V61.16H36.24V78.92h15.6v43.57H71V78.92Z"
-                                        transform="translate(0.69 0.51)"
-                                    ></path>
-                                </svg>
-                                <span>Sign up with Facebook</span>
-                            </a>
+                                <Image
+                                    src="/kakao.png"
+                                    alt="kakao"
+                                    width={50}
+                                    height={50}
+                                ></Image>
+                                <span>Sign up with Kakao</span>
+                            </button>
+                            <button
+                                onClick={handleNaverLogin}
+                                className="w-full flex items-center justify-center space-x-2 text-gray-600 my-2 py-2 bg-gray-100 hover:bg-gray-200 rounded"
+                            >
+                                <Image
+                                    src="/naver.png"
+                                    alt="naver"
+                                    width={60}
+                                    height={70}
+                                ></Image>
+                                <span>Sign up with Naver</span>
+                            </button>
                         </div>
                     </div>
                 </div>

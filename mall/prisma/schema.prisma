@@ -22,19 +22,20 @@ datasource db {
 // 이 토큰에도 유효기간이 있습니다. 각 provider 마다 다릅니다. Access Token 보다는 유효기간이 훨씬 깁니다.
 
 model Account {
-    id                String   @id @default(cuid())
-    provider          String
-    type              String
-    providerAccountId String
-    access_token      String?  @db.VarChar(191)
-    token_type        String?
-    refresh_token     String?  @db.VarChar(191)
-    expires_at        Int?
-    scope             String?
-    id_token          String?  @db.VarChar(191)
-    createdAt         DateTime @default(now())
-    updatedAt         DateTime @updatedAt
-    session_state     String?
+    id                       String   @id @default(cuid())
+    provider                 String
+    type                     String
+    providerAccountId        String
+    token_type               String?
+    access_token             String?  @db.MediumText
+    refresh_token            String?  @db.MediumText
+    refresh_token_expires_in Int?
+    id_token                 String?  @db.MediumText
+    expires_at               Int?
+    scope                    String?
+    createdAt                DateTime @default(now())
+    updatedAt                DateTime @updatedAt
+    session_state            String?
 
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId String
