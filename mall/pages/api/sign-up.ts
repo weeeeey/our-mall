@@ -21,7 +21,7 @@ async function handler(
         });
     }
     const bcrypt = require("bcrypt");
-    const hash = bcrypt.hashSync(information.password, 12);
+    const hash = bcrypt.hashSync(information.password, process.env.HASH_SALT);
     const user = await client.user.create({
         data: {
             name: information.name,

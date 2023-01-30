@@ -43,15 +43,13 @@ const SignUp: NextPage = () => {
     };
     const handleNaverLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const response = await signIn("kakao", {
+        const response = await signIn("naver", {
             redirect: false,
         });
         console.log(response);
     };
-
     useEffect(() => {
         if (data?.ok || session) {
-            console.log(data);
             router.push("/");
         }
     }, [router, session, data]);

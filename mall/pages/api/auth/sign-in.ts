@@ -13,6 +13,7 @@ async function handler(
             email,
         },
         select: {
+            id: true,
             name: true,
             email: true,
             image: true,
@@ -29,35 +30,11 @@ async function handler(
 
 export default withHandler({ methods: ["POST"], handler, isPrivate: false });
 
-/**CredentialsProvider({
-    id: "email-password-credential",
-    name: "Credentials", //NextAuth에서 만들어주는 Form 태그의 로그인 버튼에 노출될 텍스트
-    type: "credentials",
-    //
-    credentials: {
-        email: {
-            label: "email",
-            type: "email",
-        },
-        password: {
-            label: "password",
-            type: "password",
-        },
-    },
-    
-        if (!credentials)
-            throw new Error("잘못된 입력값으로 인한 오류 발생");
-        //
-        const { email, password } = credentials;
-        const exUser = await client.user.findUnique({
-            where: { email },
-        });
-        if (!exUser)
-            throw new Error("아이디나 비밀번호가 불일치합니다");
-        //
-        const match = await bcrypt.compare(password, exUser.password);
-        if (!match) throw new Error("아이디나 비밀번호가 불일치합니다");
-        //
-        return exUser;
-    },
+/**
+ * secure 쿠키 전달을 하려면 프론트(React)와 로그인 API를 제공할 백엔드(서버 API)는 
+ * 같은 도메인을 공유해야한다. (예: 클라이언트: https://shop.abc.com, 서버 API: https://api.abc.com)
+백엔드는 HTTP 응답 Set-Cookie 헤더에 refreshToken 값을 설정하고 accessToken 을 
+JSON payload에 담아 보내줘야 한다.
+
+https://velog.io/@yaytomato/%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%90%EC%84%9C-%EC%95%88%EC%A0%84%ED%95%98%EA%B2%8C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0
 }), */
