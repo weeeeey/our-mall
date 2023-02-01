@@ -1,6 +1,5 @@
 import client from "@/lib/server/client";
 import NextAuth from "next-auth/next";
-import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import KakaoProvider from "next-auth/providers/kakao";
 import NaverProvider from "next-auth/providers/naver";
@@ -25,47 +24,6 @@ export default NextAuth({
             clientId: process.env.NAVER_CLIENT_ID,
             clientSecret: process.env.NAVER_CLIENT_SECRET,
         }),
-        // CredentialsProvider({
-        //     id: "email-password-credential",
-        //     name: "Credentials", //NextAuth에서 만들어주는 Form 태그의 로그인 버튼에 노출될 텍스트
-        //     type: "credentials",
-
-        //     credentials: {
-        //         email: {
-        //             label: "email",
-        //             type: "email",
-        //         },
-        //         password: {
-        //             label: "password",
-        //             type: "password",
-        //         },
-        //     },
-        //     // Credentials는 내가 authorize handler를 따로 정의해야 되는 것 이외 다른 provider과 같다.
-        //     // authorize는 input했을때 필수 HTTP POST 제출되는 credential를 받아들이는.
-        //     // authrozie에는 로직을 더해라 유저를 찾을수있는 (어떤)credential이 제출한 것으로부터
-
-        //     // 객체를 리턴한다면 JWT로 지속될거야. 그리고 유저는 로그인 되고
-        //     // 만약 callback signIn을 커스텀하지 않는다면 이후에 reject할
-        //     // null을 리턴하면 에러가 보여질거임 유저가 그들의 디테일을 체크되길 보여지는것들
-        //     // error을 throw 한다면 유저는 error page에 보내지게 된다 query parameter로써 에러 메시지와 함께
-
-        //     async authorize(credentials) {
-        //         if (!credentials)
-        //             throw new Error("잘못된 입력값으로 인한 오류 발생");
-        //         //
-        //         const { email, password } = credentials;
-        //         const exUser = await client.user.findUnique({
-        //             where: { email },
-        //         });
-        //         if (!exUser)
-        //             throw new Error("아이디나 비밀번호가 불일치합니다");
-        //         //
-        //         const match = await bcrypt.compare(password, exUser.password);
-        //         if (!match) throw new Error("아이디나 비밀번호가 불일치합니다");
-        //         //
-        //         return exUser;
-        //     },
-        // }),
     ],
     pages: {
         signIn: "/sign-in",
@@ -73,14 +31,17 @@ export default NextAuth({
     },
     adapter: PrismaAdapter(client),
     secret: process.env.NEXTAUTH_SECRET,
+    session: {
+        strategy: "jwt",
+    },
     callbacks: {
         // session 따로 지정 안해주면 기본 제공인 email,name,image만 저장돼서
         // callback을 이용해서 session에 phone도 저장되게 함
         async jwt({ token }) {
             return token;
         },
-
-        async session({ session }) {
+        //
+        async session({ session, token }) {
             const user = await client.user.findUnique({
                 where: {
                     email: session.user?.email,

@@ -2,6 +2,8 @@ import withHandler, { ResponseType } from "@/lib/server/withHandler";
 import { NextApiRequest, NextApiResponse } from "next";
 import client from "@/lib/server/client";
 import bcrypt from "bcrypt";
+/**
+ */
 
 async function handler(
     req: NextApiRequest,
@@ -13,7 +15,6 @@ async function handler(
             email,
         },
         select: {
-            id: true,
             name: true,
             email: true,
             image: true,

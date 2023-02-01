@@ -28,7 +28,7 @@ model Account {
     providerAccountId        String
     token_type               String?
     access_token             String?  @db.MediumText
-    refresh_token            String?  @db.MediumText
+    refresh_token            String?  @db.LongText
     refresh_token_expires_in Int?
     id_token                 String?  @db.MediumText
     expires_at               Int?
