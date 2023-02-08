@@ -39,3 +39,11 @@ JSON payload에 담아 보내줘야 한다.
 
 https://velog.io/@yaytomato/%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%90%EC%84%9C-%EC%95%88%EC%A0%84%ED%95%98%EA%B2%8C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0
 }), */
+
+/**
+ * 1. sign-in.tsx 에서 id,pw 담아 sign-in.ts 로 Request
+ * 2. db에 담긴 회원 정보 검토 후 아이디 비번 일치 확인
+ * 3. 모두 일치 할 시 토큰 생성 후 해당 id의 유저 데이터와 토큰을 함께 Response 해줌
+ *
+ * react-cookie 사용
+ */
