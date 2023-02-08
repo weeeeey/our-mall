@@ -5,16 +5,21 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import axios from "axios";
 import useMutation from "@/lib/client/useMutation";
+import { Cookies } from "react-cookie";
 
 interface LoginProps {
     email: string;
     password: string;
 }
+
 interface LoginResult {
     ok: boolean;
+    accessToken: string;
 }
+
+const cookies = new Cookies(); //쿠키 사용을 위해 선언
+
 const SignUp: NextPage = () => {
     const { register, handleSubmit } = useForm<LoginProps>();
     const { data: session } = useSession();
@@ -24,6 +29,7 @@ const SignUp: NextPage = () => {
         useMutation<LoginResult>("/api/auth/sign-in");
     const onVaild = async (form: LoginProps) => {
         confirm(form);
+        // 로그인 정보 POST 하고 응답 받은 accessToken을 cookies에 저장한다.
     };
     const handleGoogleLogin = async (
         e: React.MouseEvent<HTMLButtonElement>
@@ -49,10 +55,20 @@ const SignUp: NextPage = () => {
         console.log(response);
     };
     useEffect(() => {
+        if (data?.ok) {
+            const { accessToken } = data;
+            console.log(accessToken);
+            cookies.set("LoginToken", accessToken, {
+                path: "/",
+                secure: true,
+                sameSite: "none",
+            });
+        }
         if (data?.ok || session) {
             router.push("/");
         }
     }, [router, session, data]);
+
     return (
         <>
             <div className="bg-gray-200 w-full min-h-screen flex items-center justify-center ">

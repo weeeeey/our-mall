@@ -2,8 +2,7 @@ import withHandler, { ResponseType } from "@/lib/server/withHandler";
 import { NextApiRequest, NextApiResponse } from "next";
 import client from "@/lib/server/client";
 import bcrypt from "bcrypt";
-/**
- */
+import jwt from "jsonwebtoken";
 
 async function handler(
     req: NextApiRequest,
@@ -23,7 +22,26 @@ async function handler(
     });
     if (!user) throw new Error("일치하는 아디 ㄴㄴ");
     if (bcrypt.compareSync(password, user.password)) {
-        return res.json({ ok: true });
+        const accessToken = await new Promise((res, rej) => {
+            jwt.sign(
+                {
+                    memberId: user.email,
+                    memberName: user.name,
+                },
+                process.env.JWT_SECRETKEY,
+                {
+                    expiresIn: "5m", //토큰 유효시간
+                },
+                (err, token) => {
+                    if (err) {
+                        rej(err);
+                    } else {
+                        res(token);
+                    }
+                }
+            );
+        });
+        return res.json({ ok: true, accessToken }); // response에 성공 여부와 accessToken 담아서 보냄
     } else {
         throw new Error("일치하는 비번 xx");
     }
