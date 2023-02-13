@@ -63,8 +63,9 @@ const SignUp: NextPage = () => {
                 secure: true,
                 sameSite: "none",
             });
+            router.push("/");
         }
-        if (data?.ok || session) {
+        if (session) {
             router.push("/");
         }
     }, [router, session, data]);
